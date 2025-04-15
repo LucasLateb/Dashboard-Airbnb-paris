@@ -9,14 +9,9 @@ st.set_page_config(page_title="Dashboard Airbnb Paris", layout="wide")
 st.title("🏠 Dashboard Airbnb - Paris")
 
 # Chargement des données
-URL_RAW = "https://minio.lab.sspcloud.fr/${greatisma}/Dashboard-Airbnb-paris/Processed/listings-clean-2025-04-15.csv"
+URL_RAW = "https://minio.lab.sspcloud.fr/greatisma/Dashboard-Airbnb-paris/data/processed/listings-clean-2025-04-15.csv"
 data_path = os.environ.get("data_path", URL_RAW)
-
-@st.cache_data
-def load_data(path):
-    return pd.read_csv(path)
-
-df = load_data(data_path)
+df = pd.read_csv(data_path)
 
 # Affichage rapide
 st.subheader("Aperçu des données")
