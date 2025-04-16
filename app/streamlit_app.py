@@ -70,6 +70,45 @@ fig_comp = px.bar(
 )
 st.plotly_chart(fig_comp, use_container_width=True)
 
+# Bon plans
+st.subheader("💎 Bons plans Airbnb à Paris")
+
+# Calcul des seuils dynamiques
+prix_med = filtered_df["price"].median()
+reviews_med = filtered_df["number_of_reviews"].median()
+dispo_med = filtered_df["availability_365"].median()
+
+# Filtrage des bons plans
+bons_plans = filtered_df[
+    (filtered_df["price"] <= prix_med) &
+    (filtered_df["number_of_reviews"] >= reviews_med) &
+    (filtered_df["availability_365"] >= dispo_med)
+]
+
+st.markdown(f"**{len(bons_plans)} logements repérés** comme bons plans selon :")
+st.markdown(f"- Prix ≤ {prix_med:.2f} €")
+st.markdown(f"- Reviews ≥ {reviews_med:.0f}")
+st.markdown(f"- Disponibilité ≥ {dispo_med:.0f} jours/an")
+
+st.dataframe(bons_plans[["name", "neighbourhood_cleansed", "price", "number_of_reviews",
+                         "availability_365"]].head(10), use_container_width=True)
+
+st.subheader("📍 Carte des bons plans sélectionnés")
+
+fig_bonsplans = px.scatter_mapbox(
+    bons_plans,
+    lat="latitude",
+    lon="longitude",
+    color="price",
+    hover_name="name",
+    size="price",
+    zoom=11,
+    height=500
+)
+fig_bonsplans.update_layout(mapbox_style="open-street-map")
+fig_bonsplans.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+st.plotly_chart(fig_bonsplans, use_container_width=True)
+
 # ➕ Graphique : distribution des prix
 st.subheader("📊 Distribution des prix")
 fig_price = px.histogram(
