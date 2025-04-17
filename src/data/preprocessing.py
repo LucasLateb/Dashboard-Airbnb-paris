@@ -13,7 +13,7 @@ def decompress_csv_gz(input_path: Path, output_path: Path):
 def clean_listings(df: pd.DataFrame) -> pd.DataFrame:
     # Colonnes utiles (peut évoluer selon ton besoin de dashboard)
     keep_cols = [
-        "id", "name", "host_id", "host_name", "neighbourhood", 
+        "id", "name", "host_id", "host_name", "neighbourhood_cleansed", 
         "latitude", "longitude", "room_type", "price", 
         "minimum_nights", "number_of_reviews", "last_review", 
         "reviews_per_month", "calculated_host_listings_count", 
