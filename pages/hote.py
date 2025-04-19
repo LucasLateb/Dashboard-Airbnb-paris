@@ -1,7 +1,13 @@
 import streamlit as st
 from app.utils.load import load_data, load_css
-from app.utils.filters import apply_filters
-from app.components.charts import show_quartier_comparison, show_price_distribution, show_availability_vs_reviews
+from app.utils.filters import apply_filters, detect_annonces_a_revoir
+from app.components.charts import (
+    show_kpi_block,
+    show_quartier_comparison,
+    show_price_distribution,
+    show_availability_vs_reviews,
+    show_room_type_pie
+)
 from app.components.maps import render_fast_marker_map
 import pandas as pd
 
@@ -26,29 +32,24 @@ selected_price = st.sidebar.slider("Prix (€)", price_min, min(price_max, 1000)
 filtered_df = apply_filters(df, selected_neigh, selected_types, selected_price)
 
 # ----------- KPIs concurrentiels ----------- #
-col1, col2 = st.columns(2)
-col1.metric("Prix moyen (€)", f"{filtered_df['price'].mean():.2f}")
-col2.metric("Avis moyen", f"{filtered_df['number_of_reviews'].mean():.1f}")
-# TODO LATER: KPI superhost (variable non conservée)
+show_kpi_block(filtered_df, df)
 
 # ----------- Carte des concurrents ----------- #
 st.subheader("🗺️ Localisation des concurrents")
 render_fast_marker_map(filtered_df)
 
+# ----------- Graphique camembert des types ----------- #
+show_room_type_pie(filtered_df)
+
 # ----------- Recommandations dynamiques ----------- #
 st.subheader("🧠 Recommandations automatiques")
-prix_75 = df["price"].quantile(0.75)
-nb_reviews_med = df["number_of_reviews"].median()
-dispo_med = df["availability_365"].median()
-
-a_revoir = filtered_df[
-    (filtered_df["price"] > prix_75) &
-    ((filtered_df["number_of_reviews"] < nb_reviews_med) |
-     (filtered_df["availability_365"] < dispo_med))
-]
-
+a_revoir = detect_annonces_a_revoir(filtered_df)
 st.warning(f"{len(a_revoir)} annonces semblent positionnées trop haut en prix")
-st.dataframe(a_revoir[["name", "price", "availability_365", "number_of_reviews"]].head(10), use_container_width=True)
+st.dataframe(
+    a_revoir[["name", "price", "availability_365", "number_of_reviews"]],
+    use_container_width=True,
+    height=400  # ou plus si tu veux une plus grande zone visible
+)
 
 # ----------- Comparaison inter-quartiers ----------- #
 show_quartier_comparison(filtered_df)
@@ -56,5 +57,3 @@ show_quartier_comparison(filtered_df)
 # ----------- Graphiques supplémentaires ----------- #
 show_price_distribution(filtered_df)
 show_availability_vs_reviews(filtered_df)
-
-# TODO LATER : séries temporelles (calendar.csv), carte tension locative (INSEE)
