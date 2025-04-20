@@ -6,11 +6,13 @@ Ce dashboard propose deux expériences sur mesure :
 - 🎒 **Voyageur / Locataire** : trouver rapidement les meilleurs logements
 - 🏛 **Hôte / Collectivité** : analyser l’offre et optimiser son positionnement
 
+🔗 **Lien vers le dashboard déployé** : [https://airbnb-dash.onrender.com](https://airbnb-dash.onrender.com)
+
 ---
 
 ## 🚀 Objectifs & Usages
 
-Ce dashboard transforme un fichier de données brut en outil d'aide à la décision. Il permet :
+Ce dashboard transforme un fichier de données brut en **outil d'aide à la décision**. Il permet :
 
 - ✅ Une exploration **filtrable** de l'offre Airbnb à Paris
 - ✅ Une **carte interactive** avec clustering et prix
@@ -25,79 +27,93 @@ Ce dashboard transforme un fichier de données brut en outil d'aide à la décis
 
 ```
 Dashboard-Airbnb-paris/
-├── Home.py                      # Point d'entrée du projet (accueil Streamlit)
+├── Home.py                      # Accueil du dashboard
 ├── app/
-│   ├── assets/                 # Fichiers CSS et logo
-│   ├── components/            # Cartes et graphiques personnalisés
-│   │   ├── charts.py
-│   │   └── maps.py
-│   └── utils/                 # Chargement et logique métier
-│       ├── load.py
-│       └── filters.py
+│   ├── assets/
+│   │   ├── styles.css           # Design personnalisé
+│   │   └── logo_airbnb.png      # Logo du dashboard
+│   ├── components/
+│   │   ├── charts.py            # Fonctions de graphiques Plotly
+│   │   └── maps.py              # Cartes interactives Folium
+│   └── utils/
+│       ├── load.py              # Chargement des données
+│       └── filters.py           # Fonctions de filtrage
 ├── pages/
-│   ├── home.py                # Choix du profil utilisateur
-│   ├── voyageur.py            # Vue 1 : voyageur
-│   └── hote.py                # Vue 2 : hôte / collectivité
+│   ├── home.py                  # Choix du profil utilisateur
+│   ├── voyageur.py              # Vue 🎒 Voyageur
+│   └── hote.py                  # Vue 🏛 Hôte / Collectivité
+├── .github/workflows/
+│   ├── docker-build.yml         # CI DockerHub
+│   └── docker-tagged.yml        # CI/CD via tag
+├── Dockerfile                   # Image Docker du projet
 ├── requirements.txt
+├── environment.yml
+├── install.sh
+├── LICENSE
+└── README.md
 ```
 
 ---
 
-## ⚙️ Installation rapide
+## ⚙️ Installation locale
 
 ```bash
 # 1. Cloner le projet
-$ git clone https://github.com/toncompte/Dashboard-Airbnb-paris.git
-$ cd Dashboard-Airbnb-paris
+git clone https://github.com/greatisma/Dashboard-Airbnb-paris.git
+cd Dashboard-Airbnb-paris
 
 # 2. Créer un environnement virtuel
-$ python -m venv venv
-$ source venv/bin/activate  # ou .\venv\Scripts\activate sous Windows
+python -m venv venv
+source venv/bin/activate   # ou .\venv\Scripts\activate sur Windows
 
 # 3. Installer les dépendances
-$ pip install -r requirements.txt
+pip install -r requirements.txt
 
 # 4. Lancer le dashboard
-$ streamlit run Home.py
+streamlit run Home.py
 ```
 
 ---
 
-## 📊 Fonctionnalités par profil
+## 👥 Fonctionnalités par profil
 
 ### 🎒 Vue Voyageur
-Objectif : aider les utilisateurs à trouver des logements pertinents selon leurs critères et saisonnalité.
 
-Fonctionnalités :
-- Filtres : quartier, type, prix max
+**Objectif** : trouver des logements pertinents selon ses critères et saisonnalité.
+
+**Fonctionnalités** :
+- Filtres : quartier, type, prix, nb nuits, période
 - KPIs : prix médian, dispo, reviews, nb logements
 - Carte interactive avec clustering
-- Bons plans détectés automatiquement (prix bas, bons avis, dispo haute)
-- Graphiques : boxplots, score qualité/prix, barplot de saisonnalité
-- Favoris cliquables et stockés dans `st.session_state["shortlist"]`
+- Bons plans détectés automatiquement
+- Graphiques : boxplots, heatmaps, prix par quartier
+- Favoris stockés dans `st.session_state["shortlist"]` et exportables
+
+---
 
 ### 🏛 Vue Hôte / Collectivité
-Objectif : comprendre la position d’un hôte dans le marché et ajuster sa stratégie.
 
-Fonctionnalités :
-- Filtres : quartier, type, plage de prix
-- KPIs : comparaison locale vs médiane globale
+**Objectif** : comprendre la position d’un hôte dans le marché et ajuster sa stratégie.
+
+**Fonctionnalités** :
+- Filtres stratégiques : quartier, type, prix, dispo
+- KPIs : comparaison locale vs globale
 - Carte des concurrents
-- Recommandations dynamiques (prix élevés / peu d’avis)
-- Graphiques avancés : reviews, dispo, prix, type, dispersion, boxplot
-- Système de détection des logements surtarifés (Z-score)
+- Recommandations dynamiques
+- Graphiques avancés : reviews, dispo, dispersion
+- Détection des logements surtarifés (Z-score)
 
 ---
 
-## 🌐 Données utilisées
+## 🌍 Données
 
-- Fichier enrichi : `listings-enriched-2025-04-20.csv`
-- Colonnes clés : `name`, `price`, `room_type`, `availability_365`, `latitude`, `longitude`, `neighbourhood_cleansed`, `number_of_reviews`, etc.
 - Source : [Inside Airbnb](http://insideairbnb.com/get-the-data.html)
+- Fichier enrichi : `listings-enriched-2025-04-20.csv`
+- Champs utilisés : `name`, `price`, `room_type`, `availability_365`, `latitude`, `longitude`, `neighbourhood_cleansed`, `number_of_reviews`, `listing_url`, etc.
 
 ---
 
-## 📦 Librairies principales
+## 📦 Librairies utilisées
 
 ```txt
 streamlit
@@ -111,42 +127,51 @@ requests
 
 ---
 
+## 🐳 Déploiement
+
+Le projet est dockerisé et automatiquement publié sur DockerHub.
+
+```bash
+docker pull greatisma/airbnb-dash:latest
+docker run -p 8501:8501 greatisma/airbnb-dash:latest
+```
+
+CI/CD avec GitHub Actions :
+- `docker-build.yml` : build automatique sur `push`
+- `docker-tagged.yml` : publication sur `DockerHub` lors des tags
+
+---
+
 ## 💼 Apport métier
 
 ### Pour les voyageurs :
-- Trouver un logement **adapté à ses critères** et son budget
-- Découvrir les **meilleures affaires** de manière automatisée
-- Favoriser les quartiers au **meilleur rapport qualité/prix**
+- Trouver un logement **adapté** à ses critères
+- Accéder aux **bons plans** filtrés intelligemment
+- Explorer l’offre par quartier, par saison, par prix
 
-### Pour les hôtes et collectivités :
-- Evaluer la **visibilité et attractivité** des logements
-- Repérer les logements **sur ou sous-performants**
-- Ajuster son **tarif de manière stratégique**
-- Visualiser l’**offre concurrente** et sa dispersion territoriale
-
----
-
-## 🖼 Aperçus visuels
-- Carte interactive avec clustering dynamique 🗺️
-- Tableau de bons plans 💎
-- Boxplots et scores qualitatifs 📊
-- KPIs explicites avec délta vs Paris 🔍
+### Pour les hôtes / collectivités :
+- Observer la **concurrence locale**
+- Identifier des **ajustements tarifaires**
+- Surveiller la **visibilité et saturation** du marché
 
 ---
 
-## 🧠 Pourquoi ce projet est différent ?
+## 📸 Aperçu visuel
 
-- Architecture modulaire, réutilisable
-- Focalisé sur l’**utilisateur final**
-- Dashboard **actionnable, esthétique, et fluide**
-- Mise en valeur des **bonnes pratiques de Streamlit**
+- Carte interactive dynamique 🗺️
+- Liste des bons plans 💎
+- Boxplot des prix 🧺
+- KPIs synthétiques 📊
 
 ---
 
-## 👨‍💻 Auteur & contexte
-Projet réalisé dans le cadre d’une évaluation de fin de cours en **mise en production de projet ML / dataviz**. Pensé pour être réaliste, pertinent, et utile en situation professionnelle ou d’analyse marché.
+## 👨‍🎓 Contexte
+
+Projet développé dans le cadre du cours **Mise en production de projet ML / Data Science**, avec une exigence de **réalisme, modularité, et impact utilisateur**.
 
 ---
 
 ## 🪪 Licence
-Données Inside Airbnb — usage non commercial. Code distribué sous licence MIT.
+
+- Données : Inside Airbnb — usage non commercial.
+- Code source : Licence MIT.
