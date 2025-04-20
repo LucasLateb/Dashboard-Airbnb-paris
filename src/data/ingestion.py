@@ -5,7 +5,7 @@ from pathlib import Path
 
 def download_airbnb_data(url: str, save_path: Path):
     save_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Téléchargement du fichier
     response = requests.get(url)
     if response.status_code == 200:
@@ -22,5 +22,5 @@ if __name__ == "__main__":
     # Sauvegarde avec date du jour pour historique
     today = datetime.today().strftime('%Y-%m-%d')
     save_path = Path(f"./data/raw/listings-{today}.csv.gz")
-    
+
     download_airbnb_data(url, save_path)

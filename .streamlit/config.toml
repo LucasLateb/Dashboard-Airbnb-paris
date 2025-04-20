@@ -1,0 +1,19 @@
+# .streamlit/config.toml
+
+[theme]
+# Thème clair par défaut
+base = "light"
+primaryColor = "#B0006D"               # couleur principale (Airbnb pink)
+backgroundColor = "#f9f9f9"             # fond clair
+secondaryBackgroundColor = "#f2f2f2"    # sidebar, conteneurs
+textColor = "#212121"                   # couleur du texte
+font = "sans serif"
+
+[theme.dark]
+# Thème sombre
+base = "dark"
+primaryColor = "#BB86FC"
+backgroundColor = "#0f1117"
+secondaryBackgroundColor = "#1a1d23"
+textColor = "#f5f5f5"
+font = "sans serif"

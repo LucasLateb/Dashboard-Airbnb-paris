@@ -17,7 +17,7 @@ def clean_listings(df: pd.DataFrame) -> pd.DataFrame:
         "latitude", "longitude", "room_type", "price", 
         "minimum_nights", "number_of_reviews", "last_review", 
         "reviews_per_month", "calculated_host_listings_count", 
-        "availability_365"
+        "availability_365", "listing_url"
     ]
     df = df[keep_cols]
 
@@ -25,7 +25,6 @@ def clean_listings(df: pd.DataFrame) -> pd.DataFrame:
     df.loc[:, "price"] = df["price"].replace(r'[\$,]', '', regex=True).astype(float)
     df.loc[:, "last_review"] = pd.to_datetime(df["last_review"], errors='coerce')
 
-    
     # Nettoyage basique : coordonnées valides & prix raisonnables
     df = df.dropna(subset=["latitude", "longitude", "price"])
     df = df[df["price"] < 1000]  # exclure prix aberrants
