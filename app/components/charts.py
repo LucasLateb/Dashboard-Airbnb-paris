@@ -83,10 +83,6 @@ def show_kpi_block(df_filtered, df_global):
         value=f"{taux_bons_plans:.1f}%",
         help="Part des annonces avec un excellent équilibre entre prix, avis et disponibilité (top recommandations automatiques)."
     )
-    col1.markdown('<div class="kpi-caption">vs médiane Paris</div>', unsafe_allow_html=True)
-    col2.markdown('<div class="kpi-caption">dispo sur l’année</div>', unsafe_allow_html=True)
-    col3.markdown('<div class="kpi-caption">note moyenne voyageurs</div>', unsafe_allow_html=True)
-    col4.markdown('<div class="kpi-caption">% des meilleurs plans</div>', unsafe_allow_html=True)
 
 
 def show_quartier_comparison(df):
@@ -181,12 +177,18 @@ def show_automatic_reco_table(df):
     dispo_med = df["availability_365"].median()
     a_revoir = df[
         (df["price"] > prix_75) &
-        ((df["number_of_reviews"] < nb_reviews_med) |
-         (df["availability_365"] < dispo_med))
+        (
+            (df["number_of_reviews"] < nb_reviews_med) |
+            (df["availability_365"] < dispo_med)
+        )
     ]
     st.warning(f"⚠️ {len(a_revoir)} annonces semblent positionnées trop haut en prix")
+    # ← Here we include listing_url alongside the other columns
     st.dataframe(
-        a_revoir[["name", "price", "availability_365", "number_of_reviews"]],
+        a_revoir[
+            ["name", "neighbourhood_cleansed", "price",
+             "availability_365", "number_of_reviews", "listing_url"]
+        ].drop_duplicates(),
         use_container_width=True,
         height=400
     )
@@ -373,17 +375,13 @@ def show_kpi_block_voyageur(df_filtered):
         value=str(nb_annonces),
         help="Nombre total d’annonces correspondant à vos filtres actuels."
     )
-    col1.markdown('<div class="kpi-caption">vs médiane Paris</div>', unsafe_allow_html=True)
-    col2.markdown('<div class="kpi-caption">dispo sur l’année</div>', unsafe_allow_html=True)
-    col3.markdown('<div class="kpi-caption">note moyenne voyageurs</div>', unsafe_allow_html=True)
-    col4.markdown('<div class="kpi-caption">% des meilleurs plans</div>', unsafe_allow_html=True)
 
 
 def show_seasonality_bar(df):
     render_title_with_info(
         "📆 Saisonnalité des logements",
-        "Cette visualisation montre le nombre moyen de jours disponibles par mois, "
-        "pour les annonces sélectionnées. Il s'agit d'une prévision. Cela permet d’identifier les saisons les plus actives ou creuses."
+        "Cette visualisation montre le **nombre moyen de jours disponibles par mois**, "
+        "pour les annonces sélectionnées. Cela permet d’identifier les saisons les plus actives ou creuses."
     )
 
     if "month" not in df.columns or "nb_jours_dispos" not in df.columns:
