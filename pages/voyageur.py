@@ -1,11 +1,9 @@
 import streamlit as st
-import plotly.express as px
 import pandas as pd
 from app.utils.load import load_data, load_css
 from app.utils.filters import render_sidebar_filters, apply_filters, detect_bons_plans
 from app.components.maps import render_fast_marker_map
 from app.components.charts import (
-    show_price_distribution,
     show_boxplot_quartiers,
     show_summary_bar_chart,
     show_top_deals_score,
@@ -24,16 +22,20 @@ st.markdown("""
 <div style='font-size: 1rem; margin-bottom: 1.5em;'>
 Bienvenue dans la vue <strong>Voyageur</strong> 👋<br><br>
 
-Cette interface vous aide à trouver rapidement des logements adaptés à vos besoins à Paris. Elle est structurée autour de plusieurs blocs :
+Cette interface vous aide à trouver rapidement des logements adaptés à vos besoins à Paris.
+Elle est structurée autour de plusieurs blocs :
 <ul>
   <li>📊 Des <strong>indicateurs clés</strong> pour résumer le marché actuel</li>
   <li>📍 Une <strong>carte interactive</strong> des logements disponibles</li>
   <li>💎 Une sélection de <strong>bons plans automatiques</strong> selon vos filtres</li>
-  <li>📦 Des <strong>graphiques analytiques</strong> pour comparer les prix, la saisonnalité, et plus</li>
+  <li>📦 Des <strong>graphiques analytiques</strong> pour comparer les prix, la saisonnalité, et
+  plus</li>
   <li>🧺 Une section pour <strong>gérer vos favoris</strong></li>
 </ul>
 
-ℹ️ <em>N’hésitez pas à survoler les petites icônes d’information</em> <span style='background:#eee; padding:0.1em 0.3em; border-radius:3px;'>ℹ️</span> à côté des titres pour obtenir des explications détaillées sur chaque graphique ou tableau.
+ℹ️ <em>N’hésitez pas à survoler les petites icônes d’information</em> <span style='background:#eee;
+padding:0.1em 0.3em; border-radius:3px;'>ℹ️</span> à côté des titres pour obtenir des explications
+détaillées sur chaque graphique ou tableau.
 </div>
 """, unsafe_allow_html=True)
 
@@ -76,10 +78,9 @@ st.subheader("🧺 Vos favoris")
 if st.session_state["shortlist"]:
     favs_df = pd.DataFrame(st.session_state["shortlist"])
     st.dataframe(
-        favs_df[["name", "neighbourhood_cleansed", "price", "availability_365", "number_of_reviews"]],
+        favs_df[["name", "neighbourhood_cleansed", "price", "availability_365",
+                 "number_of_reviews"]],
         use_container_width=True
     )
 else:
     st.info("Aucun favori sélectionné pour le moment.")
-
-# TODO LATER: ajouter heatmap calendrier + boutons ‘favoris’

@@ -1,5 +1,6 @@
 import streamlit as st
 
+
 def apply_filters(df, quartiers, types, prix_range):
     return df[
         (df["neighbourhood_cleansed"].isin(quartiers)) &

@@ -71,24 +71,28 @@ def show_kpi_block(df_filtered, df_global):
     col2.metric(
         label="📅 Dispo moyenne (j/an)",
         value=f"{dispo_moy:.0f}",
-        help="Nombre de jours moyens où les logements sont disponibles à la réservation dans l’année."
+        help="Nombre de jours moyens où les logements sont disponibles à la réservation dans"
+             "l’année."
     )
     col3.metric(
         label="⭐ Avis moyens",
         value=f"{review_moy:.1f}",
-        help="Nombre moyen d’avis laissés par les voyageurs. Utile pour évaluer la crédibilité ou l’attractivité."
+        help="Nombre moyen d’avis laissés par les voyageurs. Utile pour évaluer la crédibilité ou"
+             "l’attractivité."
     )
     col4.metric(
         label="💎 % Bons plans",
         value=f"{taux_bons_plans:.1f}%",
-        help="Part des annonces avec un excellent équilibre entre prix, avis et disponibilité (top recommandations automatiques)."
+        help="Part des annonces avec un excellent équilibre entre prix, avis et disponibilité"
+             "(top recommandations automatiques)."
     )
 
 
 def show_quartier_comparison(df):
     render_title_with_info(
         "🏙️ Comparaison entre quartiers sélectionnés",
-        "Ce graphique permet de comparer les prix moyens entre quartiers. La taille des bulles représente le nombre d’annonces, et la couleur indique la disponibilité moyenne."
+        "Ce graphique permet de comparer les prix moyens entre quartiers. La taille des bulles"
+        "représente le nombre d’annonces, et la couleur indique la disponibilité moyenne."
     )
     stats = (
         df.groupby("neighbourhood_cleansed")
@@ -109,7 +113,8 @@ def show_quartier_comparison(df):
 def show_price_distribution(df):
     render_title_with_info(
         "📊 Distribution des prix",
-        "Histogramme des prix des logements filtrés. La ligne rouge verticale représente le prix médian observé sur la sélection."
+        "Histogramme des prix des logements filtrés. La ligne rouge verticale représente le prix"
+        "médian observé sur la sélection."
     )
     fig = px.histogram(df, x="price", nbins=40, title="")
     fig.add_vline(x=df["price"].median(), line_dash="dash", line_color="red",
@@ -120,10 +125,13 @@ def show_price_distribution(df):
 def show_availability_vs_reviews(df):
     render_title_with_info(
         "📈 Reviews vs Disponibilité",
-        "Chaque point représente un logement. L’axe des x indique la disponibilité sur l’année, l’axe des y montre le nombre total de reviews. La taille reflète les reviews mensuels, et la couleur le type de logement."
+        "Chaque point représente un logement. L’axe des x indique la disponibilité sur l’année,"
+        "l’axe des y montre le nombre total de reviews. La taille reflète les reviews mensuels, et"
+        "la couleur le type de logement."
     )
     scatter_df = df[df["reviews_per_month"].notna()].copy()
-    scatter_df["reviews_per_month"] = pd.to_numeric(scatter_df["reviews_per_month"], errors="coerce")
+    scatter_df["reviews_per_month"] = pd.to_numeric(scatter_df["reviews_per_month"],
+                                                    errors="coerce")
     fig = px.scatter(
         scatter_df,
         x="availability_365", y="number_of_reviews",
@@ -137,7 +145,8 @@ def show_availability_vs_reviews(df):
 def show_price_boxplot(df):
     render_title_with_info(
         "📦 Dispersion des prix par quartier",
-        "Boxplot : médiane, étendue, et outliers des prix dans chaque quartier. Cela permet de voir la variabilité des tarifs dans une même zone."
+        "Boxplot : médiane, étendue, et outliers des prix dans chaque quartier. Cela permet de voir"
+        "la variabilité des tarifs dans une même zone."
     )
     fig = px.box(
         df, x="neighbourhood_cleansed", y="price", color="room_type",
@@ -149,7 +158,8 @@ def show_price_boxplot(df):
 def show_tarif_suggestion(df):
     st.subheader("💡 Suggestions d'ajustement tarifaire", help=(
         "Ce tableau repère les **logements dont le tarif est anormalement élevé** dans leur "
-        "**quartier et type de logement**. Utile pour détecter des anomalies statistiques via le Z-score."
+        "**quartier et type de logement**. Utile pour détecter des anomalies statistiques via"
+        "le Z-score."
     ))
     seuil = 2  # z-score
     grouped = df.groupby(["neighbourhood_cleansed", "room_type"])["price"]
@@ -197,7 +207,8 @@ def show_automatic_reco_table(df):
 def show_room_type_pie(df):
     render_title_with_info(
         "🏘️ Répartition des types de logement",
-        "Ce diagramme circulaire montre la proportion de chaque type de logement (entier, chambre privée, etc.) dans votre sélection. Utile pour comprendre l’offre dominante."
+        " Ce diagramme circulaire montre la proportion de chaque type de logement (entier, chambre"
+        " privée, etc.) dans votre sélection. Utile pour comprendre l’offre dominante."
     )
     counts = df["room_type"].value_counts().reset_index()
     counts.columns = ["room_type", "count"]
@@ -208,7 +219,8 @@ def show_room_type_pie(df):
 def show_price_summary_bar(df):
     render_title_with_info(
         "📉 Prix moyen par quartier",
-        "Visualisation combinée : prix moyen par quartier, écart-type (barres d’erreur) et médiane (valeurs affichées). Permet d’apprécier la stabilité ou dispersion des tarifs."
+        " Visualisation combinée : prix moyen par quartier, écart-type (barres d’erreur) et médiane"
+        " (valeurs affichées). Permet d’apprécier la stabilité ou dispersion des tarifs."
     )
     summary = (
         df.groupby("neighbourhood_cleansed")["price"]
@@ -232,8 +244,8 @@ def show_price_summary_bar(df):
 def show_bons_plans_table(df):
     render_title_with_info(
         "💎 Bons plans (automatiques)",
-        "Ces logements ont un excellent compromis entre prix bas, bonne disponibilité et bon nombre d’avis. "
-        "Sélectionnez ceux que vous souhaitez enregistrer comme favoris."
+        "Ces logements ont un excellent compromis entre prix bas, bonne disponibilité et"
+        " bon nombre d’avis. Sélectionnez ceux que vous souhaitez enregistrer comme favoris."
     )
 
     # Initialisation de la shortlist si besoin
@@ -244,13 +256,14 @@ def show_bons_plans_table(df):
         st.info("Aucun bon plan ne correspond actuellement à vos filtres.")
         return
 
-    # ▶️ On retire les éventuels doublons (ici basé sur le nom, 
+    # ▶️ On retire les éventuels doublons (ici basé sur le nom,
     #    ou remplacez 'name' par l'identifiant unique si vous en avez un)
     df_unique = df.drop_duplicates(subset=["name"])
 
     # 1️⃣ Affichage de la table scrollable sans doublons
     st.dataframe(
-        df_unique[["name", "neighbourhood_cleansed", "price", "availability_365", "number_of_reviews"]],
+        df_unique[["name", "neighbourhood_cleansed", "price", "availability_365",
+                   "number_of_reviews"]],
         use_container_width=True,
         height=400
     )
@@ -272,7 +285,8 @@ def show_bons_plans_table(df):
 def show_boxplot_quartiers(df):
     render_title_with_info(
         "📦 Prix par quartier",
-        "Chaque boîte représente la distribution des prix dans un quartier donné : médiane, étendue et valeurs extrêmes. Permet d’observer les zones les plus stables ou variables."
+        "Chaque boîte représente la distribution des prix dans un quartier donné : médiane, étendue"
+        " et valeurs extrêmes. Permet d’observer les zones les plus stables ou variables."
     )
     fig = px.box(df, x="neighbourhood_cleansed", y="price", points="outliers")
     st.plotly_chart(fig, use_container_width=True)
@@ -281,7 +295,8 @@ def show_boxplot_quartiers(df):
 def show_summary_bar_chart(df):
     render_title_with_info(
         "📉 Prix moyens par quartier",
-        "Ce graphique simplifie la lecture des tarifs moyens par quartier, en indiquant aussi leur variabilité (écart-type) et la médiane (valeur affichée)."
+        "Ce graphique simplifie la lecture des tarifs moyens par quartier, en indiquant aussi leur"
+        " variabilité (écart-type) et la médiane (valeur affichée)."
     )
     stats = (
         df.groupby("neighbourhood_cleansed")["price"]
@@ -289,34 +304,9 @@ def show_summary_bar_chart(df):
         .reset_index()
         .rename(columns={"mean": "Prix moyen", "median": "Prix médian", "std": "Écart-type"})
     )
-    fig = px.bar(stats, x="neighbourhood_cleansed", y="Prix moyen", error_y="Écart-type", text="Prix médian")
+    fig = px.bar(stats, x="neighbourhood_cleansed", y="Prix moyen", error_y="Écart-type",
+                 text="Prix médian")
     fig.update_traces(textposition="outside")
-    st.plotly_chart(fig, use_container_width=True)
-
-
-def show_top_deals_score(df):
-    render_title_with_info(
-        "🏅 Meilleurs rapports qualité/prix",
-        "Classement des quartiers selon un score qualité/prix (avis / prix). "
-        "Idéal pour identifier les zones où les logements bien notés sont abordables."
-    )
-    df = df[df["price"] > 0].copy()
-    df["score_qp"] = df["number_of_reviews"] / df["price"]
-    df["score_qp"] = df["score_qp"].replace([np.inf, -np.inf], np.nan).fillna(0)
-
-    top_deals = df.groupby("neighbourhood_cleansed").apply(
-        lambda g: g.sort_values("score_qp", ascending=False).head(3)
-    ).reset_index(drop=True)
-
-    summary = top_deals.groupby("neighbourhood_cleansed")["score_qp"].mean().reset_index()
-
-    fig = px.bar(
-        summary.sort_values("score_qp", ascending=False),
-        x="neighbourhood_cleansed",
-        y="score_qp",
-        title="",
-        labels={"neighbourhood_cleansed": "Quartier", "score_qp": "Score qualité/prix moyen"}
-    )
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -358,7 +348,8 @@ def show_kpi_block_voyageur(df_filtered):
     col1.metric(
         label="💰 Prix médian (€)",
         value=f"{prix_median:.2f}",
-        help="Prix médian des logements disponibles après application de vos filtres. Moins sensible aux extrêmes que la moyenne."
+        help="Prix médian des logements disponibles après application de vos filtres. Moins"
+             "sensible aux extrêmes que la moyenne."
     )
     col2.metric(
         label="⭐ Avis moyens",
@@ -381,7 +372,8 @@ def show_seasonality_bar(df):
     render_title_with_info(
         "📆 Saisonnalité des logements",
         "Cette visualisation montre le **nombre moyen de jours disponibles par mois**, "
-        "pour les annonces sélectionnées. Cela permet d’identifier les saisons les plus actives ou creuses."
+        "pour les annonces sélectionnées. Cela permet d’identifier les saisons les plus actives ou"
+        "creuses."
     )
 
     if "month" not in df.columns or "nb_jours_dispos" not in df.columns:

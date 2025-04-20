@@ -9,8 +9,7 @@ from app.components.charts import (
     show_room_type_pie,
     show_price_boxplot,
     show_price_summary_bar,
-    show_automatic_reco_table,
-    show_tarif_suggestion
+    show_automatic_reco_table
 )
 from app.components.maps import render_fast_marker_map
 
@@ -24,7 +23,8 @@ st.sidebar.header("Changer de 🎨 Thème, dans les paramètres (en Haut a droit
 st.title("🏠 Vue Hôte / Collectivité – Analyse de positionnement")
 st.markdown("""
 <div style='font-size: 1rem; margin-bottom: 1.5em;'>
-Cette interface est conçue pour les <strong>hôtes</strong> ou les <strong>collectivités locales</strong> 👩‍💼👨‍💼 souhaitant analyser le marché Airbnb à Paris.<br><br>
+Cette interface est conçue pour les <strong>hôtes</strong> ou les <strong>collectivités"
+locales</strong> 👩‍💼👨‍💼 souhaitant analyser le marché Airbnb à Paris.<br><br>
 
 Elle est structurée autour de plusieurs éléments clés :
 <ul>
@@ -35,7 +35,9 @@ Elle est structurée autour de plusieurs éléments clés :
   <li>💡 Une <strong>détection des tarifs à revoir</strong> via une analyse statistique</li>
 </ul>
 
-ℹ️ <em>Pensez à survoler les icônes</em> <span style='background:#eee; padding:0.1em 0.3em; border-radius:3px;'>ℹ️</span> <em>placées à côté des titres pour comprendre chaque graphique ou tableau</em>.
+ℹ️ <em>Pensez à survoler les icônes</em> <span style='background:#eee; padding:0.1em 0.3em;
+border-radius:3px;'>ℹ️</span> <em>placées à côté des titres pour comprendre chaque graphique ou
+tableau</em>.
 </div>
 """, unsafe_allow_html=True)
 
